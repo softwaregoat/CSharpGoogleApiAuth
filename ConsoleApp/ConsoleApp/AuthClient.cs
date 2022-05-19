@@ -17,7 +17,6 @@ namespace ConsoleApp
         public string client_secret { get; set; }
         public string audience { get; set; }
         public string client_credentials { get; set; }
-        private string currentAccessToken { get; set; }
         private DateTime accessTokenExpiry { get; set; }
 
         public AuthClient()
@@ -25,12 +24,12 @@ namespace ConsoleApp
             _ = GetTokenAsync();
         }
 
-        public async Task GetTokenAsync()
+        public async Task<string> GetTokenAsync()
         {
             var expiryDate = new DateTime();
             if (accessTokenExpiry > expiryDate)
             {
-                return;
+                return null;
             }
 
             var url = $"https://{domain}.auth0.com/oauth/token";
@@ -57,10 +56,41 @@ namespace ConsoleApp
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                currentAccessToken = response_json.access_token;
-                
                 accessTokenExpiry = expiryDate.AddSeconds(response_json.expires_in);
+                return response_json.access_token;
             }
+            return null;
         }
+
+        public async Task<dynamic> GetPeopleByCustomerAsync(string customerId)
+        {
+            var url = "https://api.icims.com/customers/" + customerId +"/search/people";
+
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Content-Type", "application/json");
+            client.DefaultRequestHeaders.Add("Autorization", $"Bearer {GetTokenAsync()}");
+
+            var response = await client.GetAsync(url);
+            var result = await response.Content.ReadAsStringAsync();
+
+            dynamic response_json = JsonConvert.DeserializeObject(result);
+            return response_json; // {"searchResults":[{"self":"https://api.icims.com/customers/1221/people/1", "id":1}]}
+        }
+
+        public async Task<dynamic> GetPeopleAsync(string customerId, string profileId)
+        {
+            var url = "https://api.icims.com/customers/" + customerId + "/people/" + profileId;
+
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Content-Type", "application/json");
+            client.DefaultRequestHeaders.Add("Autorization", $"Bearer {GetTokenAsync()}");
+
+            var response = await client.GetAsync(url);
+            var result = await response.Content.ReadAsStringAsync();
+
+            dynamic response_json = JsonConvert.DeserializeObject(result);
+            return response_json; 
+        }
+
     }
 }
