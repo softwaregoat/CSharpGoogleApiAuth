@@ -15,8 +15,7 @@ using System.Threading.Tasks;
 namespace ConsoleApp
 {
     class Program
-    {// If modifying these scopes, delete your previously saved credentials
-        // at ~/.credentials/gmail-dotnet-quickstart.json
+    {
         static string[] Scopes = { GmailService.Scope.GmailReadonly };
         static string ApplicationName = "Gmail API .NET Quickstart";
 
@@ -28,8 +27,6 @@ namespace ConsoleApp
             using (var stream =
                 new FileStream("credentials.json", FileMode.Open, FileAccess.Read))
             {
-                // The file token.json stores the user's access and refresh tokens, and is created
-                // automatically when the authorization flow completes for the first time.
                 string credPath = "token.json";
                 credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
                     GoogleClientSecrets.Load(stream).Secrets,
