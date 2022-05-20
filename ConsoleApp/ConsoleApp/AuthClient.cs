@@ -43,7 +43,7 @@ namespace ConsoleApp
             string json = JsonConvert.SerializeObject(json_body);
 
             HttpContent httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-            httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json; charset=utf-8");
+            httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
 
             var response = await client.PostAsync(url, httpContent);
@@ -67,7 +67,7 @@ namespace ConsoleApp
 
             var client = new HttpClient();
 
-            //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetTokenAsync().Result);
 
             var response = await client.GetAsync(url);
@@ -82,7 +82,8 @@ namespace ConsoleApp
             var url = "https://api.icims.com/customers/" + customerId + "/people/" + profileId;
 
             var client = new HttpClient();
-            //client.DefaultRequestHeaders.Add("Content-Type", "application/json");
+
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetTokenAsync().Result);
 
             var response = await client.GetAsync(url);
