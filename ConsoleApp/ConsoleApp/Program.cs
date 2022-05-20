@@ -23,6 +23,13 @@ namespace ConsoleApp
 
             AuthClient authClient = new AuthClient();
 
+            authClient.domain = "";
+            authClient.client_id = "";
+            authClient.client_secret = "";
+            authClient.audience = "";
+            authClient.client_credentials = "";
+
+
             var customerId = "1221";
             var peoples = authClient.GetPeoplesByCustomerAsync(customerId).Result;
             foreach (var people in peoples)
