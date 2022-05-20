@@ -54,7 +54,7 @@ namespace ConsoleApp
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                accessTokenExpiry = expiryDate.AddSeconds(response_json.expires_in);
+                accessTokenExpiry = expiryDate.AddSeconds(int.Parse(response_json.expires_in));
                 return response_json.access_token;
             }
             return null;
