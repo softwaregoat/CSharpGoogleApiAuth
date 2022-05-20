@@ -60,10 +60,12 @@ namespace ConsoleApp
 
         public async Task<dynamic> GetPeoplesByCustomerAsync(string customerId)
         {
+
             var url = "https://api.icims.com/customers/" + customerId +"/search/people";
 
             var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Content-Type", "application/json");
+
+            //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetTokenAsync().Result);
 
             var response = await client.GetAsync(url);
@@ -78,7 +80,7 @@ namespace ConsoleApp
             var url = "https://api.icims.com/customers/" + customerId + "/people/" + profileId;
 
             var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Content-Type", "application/json");
+            //client.DefaultRequestHeaders.Add("Content-Type", "application/json");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetTokenAsync().Result);
 
             var response = await client.GetAsync(url);
