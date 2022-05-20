@@ -29,6 +29,8 @@ namespace ConsoleApp
             authClient.audience = "";
             authClient.client_credentials = "";
 
+            var test = authClient.GetTokenAsync();
+
             var customerId = "1221";
 
             var peoples = authClient.GetPeoplesByCustomerAsync(customerId).Result;

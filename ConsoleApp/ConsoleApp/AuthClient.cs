@@ -20,7 +20,7 @@ namespace ConsoleApp
         public string client_credentials { get; set; }
         private DateTime accessTokenExpiry { get; set; }
 
-        private async Task<string> GetTokenAsync()
+        public async Task<string> GetTokenAsync()
         {
             var expiryDate = new DateTime();
             if (accessTokenExpiry > expiryDate)
