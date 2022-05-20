@@ -29,8 +29,8 @@ namespace ConsoleApp
             authClient.audience = "";
             authClient.client_credentials = "";
 
-
             var customerId = "1221";
+
             var peoples = authClient.GetPeoplesByCustomerAsync(customerId).Result;
             foreach (var people in peoples)
             {

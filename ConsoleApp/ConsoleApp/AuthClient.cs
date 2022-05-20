@@ -5,6 +5,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -63,7 +64,7 @@ namespace ConsoleApp
 
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("Content-Type", "application/json");
-            client.DefaultRequestHeaders.Add("Autorization", $"Bearer {GetTokenAsync()}");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetTokenAsync().Result);
 
             var response = await client.GetAsync(url);
             var result = await response.Content.ReadAsStringAsync();
@@ -78,7 +79,7 @@ namespace ConsoleApp
 
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("Content-Type", "application/json");
-            client.DefaultRequestHeaders.Add("Autorization", $"Bearer {GetTokenAsync()}");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetTokenAsync().Result);
 
             var response = await client.GetAsync(url);
             var result = await response.Content.ReadAsStringAsync();
