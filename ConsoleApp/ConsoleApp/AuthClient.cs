@@ -19,12 +19,7 @@ namespace ConsoleApp
         public string client_credentials { get; set; }
         private DateTime accessTokenExpiry { get; set; }
 
-        public AuthClient()
-        {
-            _ = GetTokenAsync();
-        }
-
-        public async Task<string> GetTokenAsync()
+        private async Task<string> GetTokenAsync()
         {
             var expiryDate = new DateTime();
             if (accessTokenExpiry > expiryDate)
@@ -62,7 +57,7 @@ namespace ConsoleApp
             return null;
         }
 
-        public async Task<dynamic> GetPeopleByCustomerAsync(string customerId)
+        public async Task<dynamic> GetPeoplesByCustomerAsync(string customerId)
         {
             var url = "https://api.icims.com/customers/" + customerId +"/search/people";
 

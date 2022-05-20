@@ -16,88 +16,40 @@ namespace ConsoleApp
 {
     class Program
     {
-        static string[] Scopes = { GmailService.Scope.GmailReadonly };
-        static string ApplicationName = "Gmail API .NET Quickstart";
-
         [Obsolete]
         static void Main(string[] args)
         {
-            UserCredential credential;
+            string connetionString = @"Data Source=DESKTOP-3RMGPM9\SQLSERVER;Initial Catalog=testdb;User ID=sa;Password=xxx";
 
-            using (var stream =
-                new FileStream("credentials.json", FileMode.Open, FileAccess.Read))
+            AuthClient authClient = new AuthClient();
+
+            var customerId = "1221";
+            var peoples = authClient.GetPeoplesByCustomerAsync(customerId).Result;
+            foreach (var people in peoples)
             {
-                string credPath = "token.json";
-                credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
-                    GoogleClientSecrets.Load(stream).Secrets,
-                    Scopes,
-                    "user",
-                    CancellationToken.None,
-                    new FileDataStore(credPath, true)).Result;
-                Console.WriteLine("Credential file saved to: " + credPath);
+                var profileID = people.id;
+                var profile = authClient.GetPeopleAsync(customerId, profileID.ToString());
+
+                string query = "INSERT INTO [dbo].[profile] ([profileID],[PersonID],[JobID],[CompanyID],[Note]) VALUES"
+                                + $"('{profileID}'"
+                                + $",'{profile.PersonID}'"
+                                + $",'{profile.JobID}'"
+                                + $",'{profile.CompanyID}'"
+                                + $",'{profile.Note}')";
+
+                Insert2SQL(connetionString, query);
             }
 
-            // Create Gmail API service.
-            var service = new GmailService(new BaseClientService.Initializer()
+        }
+
+        static void Insert2SQL(string connetionString, string query)
+        {
+
+            using (SqlConnection connection = new SqlConnection(connetionString))
             {
-                HttpClientInitializer = credential,
-                ApplicationName = ApplicationName,
-            });
-
-            // Define parameters of request.
-            var request = service.Users.Messages.List("me");
-
-            // List labels.
-            var messages = request.Execute().Messages;
-            Console.WriteLine("Messages:");
-            if (messages != null && messages.Count > 0)
-            {
-                foreach (var message in messages)
-                {
-                    try
-                    {
-                        var msg_id = message.Id;
-                        Console.WriteLine("================={0}", msg_id);
-                        var msg_request = service.Users.Messages.Get("me", msg_id);
-                        var result = msg_request.Execute();
-
-                        var msg_subject = result.Payload.Headers.First(em => em.Name == "Subject").Value;
-                        var msg_body = result.Payload.Body.Data;
-                        var msg_from = result.Payload.Headers.First(em => em.Name == "From").Value;
-                        var msg_to = result.Payload.Headers.First(em => em.Name == "To").Value;
-
-                        Console.WriteLine("Subject: {0}", msg_subject);
-                        Console.WriteLine("Body: {0}", msg_body);
-                        Console.WriteLine("From: {0}", msg_from);
-                        Console.WriteLine("To: {0}", msg_to);
-
-
-                        string connetionString = @"Data Source=DESKTOP-3RMGPM9\SQLSERVER;Initial Catalog=testdb;User ID=sa;Password=xxx";
-
-                        using (SqlConnection connection = new SqlConnection(connetionString))
-                        {
-                            SqlCommand command = new SqlCommand("INSERT INTO [dbo].[msg] ([msg_id],[msg_subject],[msg_body],[msg_from],[msg_to]) VALUES"
-                                + $"('{msg_id}'"
-                                + $",'{msg_subject}'"
-                                + $",'{msg_body}'"
-                                + $",'{msg_from}'"
-                                + $",'{msg_to}')"
-           , connection);
-                            command.Connection.Open();
-                            command.ExecuteNonQuery();
-                        }
-
-                    }
-                    catch (Exception ex)
-                    {
-
-                        Console.WriteLine(ex.Message);
-                    }
-                }
-            }
-            else
-            {
-                Console.WriteLine("No Messages found.");
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Connection.Open();
+                command.ExecuteNonQuery();
             }
             Console.Read();
         }
