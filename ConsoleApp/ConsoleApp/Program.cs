@@ -30,6 +30,8 @@ namespace ConsoleApp
             authClient.client_credentials = "";
 
             var test = authClient.GetTokenAsync();
+            Console.WriteLine($"Token: {test.Result}");
+
 
             var customerId = "1221";
 

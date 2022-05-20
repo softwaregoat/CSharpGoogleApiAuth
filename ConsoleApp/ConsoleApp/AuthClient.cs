@@ -32,7 +32,7 @@ namespace ConsoleApp
 
             var client = new HttpClient();
 
-            client.DefaultRequestHeaders.Add("Content-Type", "application/json");
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             dynamic json_body = new ExpandoObject();
             json_body.client_id = client_id;
@@ -41,10 +41,12 @@ namespace ConsoleApp
             json_body.grant_type = client_credentials;
 
             string json = JsonConvert.SerializeObject(json_body);
-            var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+            HttpContent httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json; charset=utf-8");
 
 
-            var response = await client.PostAsync(url, data);
+            var response = await client.PostAsync(url, httpContent);
 
             var result = await response.Content.ReadAsStringAsync();
 
