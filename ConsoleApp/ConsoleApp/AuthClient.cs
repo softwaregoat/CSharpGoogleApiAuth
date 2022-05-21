@@ -18,7 +18,7 @@ namespace ConsoleApp
         public string client_secret { get; set; }
         public string audience { get; set; }
         public string client_credentials { get; set; }
-        private DateTime accessTokenExpiry { get; set; }
+        public DateTime accessTokenExpiry { get; set; }
 
         public async Task<string> GetTokenAsync()
         {
@@ -54,7 +54,9 @@ namespace ConsoleApp
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                accessTokenExpiry = expiryDate.AddSeconds(double.Parse(response_json.expires_in));
+                var expires_in = response_json.expires_in;
+
+                accessTokenExpiry = expiryDate.AddSeconds(double.Parse(expires_in.ToString()));
                 return response_json.access_token;
             }
             return null;
