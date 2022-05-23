@@ -29,20 +29,28 @@ namespace ConsoleApp
             authClient.audience = "";
             authClient.client_credentials = "";
 
-            var test = authClient.GetTokenAsync();
-            Console.WriteLine($"Token: {test.Result}");
-
-
             var customerId = "1221";
 
             var result = authClient.GetPeoplesByCustomerAsync(customerId).Result;
+
+            if (result == null)
+            {
+                Console.WriteLine("GetPeoplesByCustomerAsync issue. Please try later");
+                Console.Read();
+                Environment.Exit(0);
+            }
+
             var peoples = result.searchResults;
 
             foreach (var people in peoples)
             {
                 var profileID = people.id;
                 var profile = authClient.GetPeopleAsync(customerId, profileID.ToString());
-
+                if (result == null)
+                {
+                    Console.WriteLine($"GetPeopleAsync ProfileID: {profileID}. Please try later");
+                    continue;
+                }
                 string query = "INSERT INTO [dbo].[profile] ([profileID],[PersonID],[JobID],[CompanyID],[Note]) VALUES"
                                 + $"('{profileID}'"
                                 + $",'{profile.PersonID}'"
@@ -53,18 +61,17 @@ namespace ConsoleApp
                 Insert2SQL(connetionString, query);
             }
 
+            Console.Read();
         }
 
         static void Insert2SQL(string connetionString, string query)
         {
-
             using (SqlConnection connection = new SqlConnection(connetionString))
             {
                 SqlCommand command = new SqlCommand(query, connection);
                 command.Connection.Open();
                 command.ExecuteNonQuery();
             }
-            Console.Read();
         }
     }
 }

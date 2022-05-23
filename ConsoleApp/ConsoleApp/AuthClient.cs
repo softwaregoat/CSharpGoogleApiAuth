@@ -57,42 +57,72 @@ namespace ConsoleApp
                 string expires_in = response_json.expires_in + "";
 
                 accessTokenExpiry = expiryDate.AddSeconds(double.Parse(expires_in.ToString()));
+
+                Console.WriteLine("Token is valid.");
                 return response_json.access_token;
             }
+            Console.WriteLine("Token is null value. Please try later");
             return null;
         }
 
         public async Task<dynamic> GetPeoplesByCustomerAsync(string customerId)
         {
+            var token = GetTokenAsync().Result;
+            if (token == null)
+            {
+                return null;
+            }
 
             var url = "https://api.icims.com/customers/" + customerId +"/search/people";
 
             var client = new HttpClient();
 
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetTokenAsync().Result);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var response = await client.GetAsync(url);
-            var result = await response.Content.ReadAsStringAsync();
 
-            dynamic response_json = JsonConvert.DeserializeObject(result);
-            return response_json; // {"searchResults":[{"self":"https://api.icims.com/customers/1221/people/1", "id":1}]}
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"GetPeoplesByCustomerAsync result : {result}");
+
+                dynamic response_json = JsonConvert.DeserializeObject(result);
+                return response_json;
+            }
+
+            Console.WriteLine("GetPeoplesByCustomerAsync is null value. Please try later");
+            return null; // {"searchResults":[{"self":"https://api.icims.com/customers/1221/people/1", "id":1}]}
         }
 
         public async Task<dynamic> GetPeopleAsync(string customerId, string profileId)
         {
+            var token = GetTokenAsync().Result;
+            if (token == null)
+            {
+                return null;
+            }
+
             var url = "https://api.icims.com/customers/" + customerId + "/people/" + profileId;
 
             var client = new HttpClient();
 
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetTokenAsync().Result);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var response = await client.GetAsync(url);
-            var result = await response.Content.ReadAsStringAsync();
 
-            dynamic response_json = JsonConvert.DeserializeObject(result);
-            return response_json; 
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"GetPeopleAsync result : {result}");
+
+                dynamic response_json = JsonConvert.DeserializeObject(result);
+                return response_json;
+            }
+
+            Console.WriteLine("GetPeopleAsync is null value. Please try later");
+            return null; // {"searchResults":[{"self":"https://api.icims.com/customers/1221/people/1", "id":1}]}
         }
 
     }
