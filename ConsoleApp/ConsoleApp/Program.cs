@@ -28,7 +28,7 @@ namespace ConsoleApp
             authClient.audience = "";
             authClient.client_credentials = "";
 
-            var customerId = "12211";
+            string customerId = "12211";
 
             var result = authClient.GetPeoplesByCustomerAsync(customerId).Result;
 
@@ -43,9 +43,9 @@ namespace ConsoleApp
 
             foreach (var people in peoples)
             {
-                var profileId = people.id;
+                var profileId = people.id.ToString();
 
-                var profile = authClient.GetPeopleAsync(customerId, profileId.ToString()).Result;
+                var profile = authClient.GetPeopleAsync(customerId, profileId).Result;
 
                 if (profile == null)
                 {
