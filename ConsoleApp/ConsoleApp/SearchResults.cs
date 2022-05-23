@@ -8,6 +8,6 @@ namespace ConsoleApp
 {
     class PeoplesByCustomer
     {
-        public List<People> searchReults { get; set; }
+        public List<People> searchResults { get; set; }
     }
 }

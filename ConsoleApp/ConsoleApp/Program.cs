@@ -39,7 +39,7 @@ namespace ConsoleApp
                 Environment.Exit(0);
             }
 
-            var peoples = result.searchReults;
+            var peoples = result.searchResults;
 
             foreach (var people in peoples)
             {
