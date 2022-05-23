@@ -55,15 +55,17 @@ namespace ConsoleApp
                     continue;
                 }
 
-                string query = "INSERT INTO [dbo].[profile] ([profileID],[firstname],[lastname],[email]) VALUES"
-                                + $"('{profileId}'"
-                                + $",'{GetProperty(profile, "firstname")}'"
-                                + $",'{GetProperty(profile, "lastname")}'"
-                                + $",'{GetProperty(profile, "email")}')";
+                Console.WriteLine(profile);
 
-                Console.WriteLine(query);
+                //string query = "INSERT INTO [dbo].[profile] ([profileID],[firstname],[lastname],[email]) VALUES"
+                //                + $"('{profileId}'"
+                //                + $",'{GetProperty(profile, "firstname")}'"
+                //                + $",'{GetProperty(profile, "lastname")}'"
+                //                + $",'{GetProperty(profile, "email")}')";
 
-                Insert2SQL(connetionString, query);
+                //Console.WriteLine(query);
+
+                //Insert2SQL(connetionString, query);
             }
 
             Console.Read();
