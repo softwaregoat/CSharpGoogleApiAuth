@@ -45,7 +45,7 @@ namespace ConsoleApp
 
             foreach (var people in peoples)
             {
-                var profileId = people.id;
+                string profileId = GetProperty(people, "id");
 
                 var profile = authClient.GetPeopleAsync(customerId, profileId);
 
@@ -57,10 +57,10 @@ namespace ConsoleApp
 
                 string query = "INSERT INTO [dbo].[profile] ([profileID],[firstname],[lastname],[email],[folder]) VALUES"
                                 + $"('{profileId}'"
-                                + $",'{profile.firstname}'"
-                                + $",'{profile.lastname}'"
-                                + $",'{profile.email}'"
-                                + $",'{profile.folder}')";
+                                + $",'{GetProperty(profile, "firstname")}'"
+                                + $",'{GetProperty(profile, "lastname")}'"
+                                + $",'{GetProperty(profile, "email")}'"
+                                + $",'{GetProperty(profile,"folder")}')";
                 Console.WriteLine(query);
 
                 Insert2SQL(connetionString, query);
@@ -77,6 +77,11 @@ namespace ConsoleApp
                 command.Connection.Open();
                 command.ExecuteNonQuery();
             }
+        }
+
+        public static string GetProperty(object target, string name)
+        {
+           return target.GetType().GetProperty(name).GetValue(target, null).ToString();
         }
     }
 }
