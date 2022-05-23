@@ -35,7 +35,9 @@ namespace ConsoleApp
 
             var customerId = "1221";
 
-            var peoples = authClient.GetPeoplesByCustomerAsync(customerId).Result;
+            var result = authClient.GetPeoplesByCustomerAsync(customerId).Result;
+            var peoples = result.searchResults;
+
             foreach (var people in peoples)
             {
                 var profileID = people.id;
