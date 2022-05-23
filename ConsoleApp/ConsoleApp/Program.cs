@@ -39,15 +39,13 @@ namespace ConsoleApp
                 Environment.Exit(0);
             }
 
-            string connetionString = @"Data Source=DESKTOP-3RMGPM9\SQLSERVER;Initial Catalog=testdb;User ID=sa;Password=xxx";
-
             var peoples = result.searchResults;
 
             foreach (var people in peoples)
             {
                 var profileId = GetProperty(people, "id");
 
-                var profile = authClient.GetPeopleAsync(customerId, profileId);
+                var profile = authClient.GetPeopleAsync(customerId, profileId).Result;
 
                 if (profile == null)
                 {
@@ -55,17 +53,16 @@ namespace ConsoleApp
                     continue;
                 }
 
-                Console.WriteLine(profile);
+                string query = "INSERT INTO [dbo].[profile] ([profileID],[firstname],[lastname],[email]) VALUES"
+                                + $"('{profileId}'"
+                                + $",'{GetProperty(profile, "firstname")}'"
+                                + $",'{GetProperty(profile, "lastname")}'"
+                                + $",'{GetProperty(profile, "email")}')";
 
-                //string query = "INSERT INTO [dbo].[profile] ([profileID],[firstname],[lastname],[email]) VALUES"
-                //                + $"('{profileId}'"
-                //                + $",'{GetProperty(profile, "firstname")}'"
-                //                + $",'{GetProperty(profile, "lastname")}'"
-                //                + $",'{GetProperty(profile, "email")}')";
+                Console.WriteLine(query);
 
-                //Console.WriteLine(query);
-
-                //Insert2SQL(connetionString, query);
+                string connetionString = @"Data Source=DESKTOP-3RMGPM9\SQLSERVER;Initial Catalog=testdb;User ID=sa;Password=xxx";
+                Insert2SQL(connetionString, query);
             }
 
             Console.Read();

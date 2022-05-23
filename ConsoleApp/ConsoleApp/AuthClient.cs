@@ -95,7 +95,7 @@ namespace ConsoleApp
             return null; // {"searchResults":[{"self":"https://api.icims.com/customers/1221/people/1", "id":1}]}
         }
 
-        public async Task<string> GetPeopleAsync(string customerId, string profileId)
+        public async Task<dynamic> GetPeopleAsync(string customerId, string profileId)
         {
             var token = GetTokenAsync().Result;
             if (token == null)
@@ -117,8 +117,8 @@ namespace ConsoleApp
                 var result = await response.Content.ReadAsStringAsync();
                 Console.WriteLine($"GetPeopleAsync result : {result}");
 
-                //dynamic response_json = JsonConvert.DeserializeObject(result);
-                return result;
+                dynamic response_json = JsonConvert.DeserializeObject(result);
+                return response_json;
             }
 
             Console.WriteLine("GetPeopleAsync is null value. Please try later");
