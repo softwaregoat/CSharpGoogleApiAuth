@@ -39,13 +39,13 @@ namespace ConsoleApp
                 Environment.Exit(0);
             }
 
-            var peoples = result.searchResults;
+            var peoples = result.searchReults;
 
             foreach (var people in peoples)
             {
-                var profileId = GetProperty(people, "id");
+                var profileId = people.id;
 
-                var profile = authClient.GetPeopleAsync(customerId, profileId).Result;
+                var profile = authClient.GetPeopleAsync(customerId, profileId.ToString()).Result;
 
                 if (profile == null)
                 {

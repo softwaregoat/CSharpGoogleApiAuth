@@ -65,7 +65,7 @@ namespace ConsoleApp
             return null;
         }
 
-        public async Task<dynamic> GetPeoplesByCustomerAsync(string customerId)
+        public async Task<PeoplesByCustomer> GetPeoplesByCustomerAsync(string customerId)
         {
             var token = GetTokenAsync().Result;
             if (token == null)
@@ -87,7 +87,7 @@ namespace ConsoleApp
                 var result = await response.Content.ReadAsStringAsync();
                 Console.WriteLine($"GetPeoplesByCustomerAsync result : {result}");
 
-                dynamic response_json = JsonConvert.DeserializeObject(result);
+                PeoplesByCustomer response_json = JsonConvert.DeserializeObject<PeoplesByCustomer>(result);
                 return response_json;
             }
 
