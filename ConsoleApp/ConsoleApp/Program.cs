@@ -45,7 +45,7 @@ namespace ConsoleApp
 
             foreach (var people in peoples)
             {
-                string profileId = GetProperty(people, "id");
+                string profileId = GetProperty(people, "id").ToString();
 
                 var profile = authClient.GetPeopleAsync(customerId, profileId);
 
@@ -57,10 +57,11 @@ namespace ConsoleApp
 
                 string query = "INSERT INTO [dbo].[profile] ([profileID],[firstname],[lastname],[email],[folder]) VALUES"
                                 + $"('{profileId}'"
-                                + $",'{GetProperty(profile, "firstname")}'"
-                                + $",'{GetProperty(profile, "lastname")}'"
-                                + $",'{GetProperty(profile, "email")}'"
-                                + $",'{GetProperty(profile,"folder")}')";
+                                + $",'{GetProperty(profile, "firstname").ToString()}'"
+                                + $",'{GetProperty(profile, "lastname").ToString()}'"
+                                + $",'{GetProperty(profile, "email").ToString()}'"
+                                + $",'{GetProperty(profile, "folder").ToString()}')";
+
                 Console.WriteLine(query);
 
                 Insert2SQL(connetionString, query);
@@ -79,9 +80,10 @@ namespace ConsoleApp
             }
         }
 
-        public static string GetProperty(object target, string name)
+        public static object GetProperty(object target, string name)
         {
-           return target.GetType().GetProperty(name).GetValue(target, null).ToString();
+            var site = System.Runtime.CompilerServices.CallSite<Func<System.Runtime.CompilerServices.CallSite, object, object>>.Create(Microsoft.CSharp.RuntimeBinder.Binder.GetMember(0, name, target.GetType(), new[] { Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo.Create(0, null) }));
+            return site.Target(site, target);
         }
     }
 }

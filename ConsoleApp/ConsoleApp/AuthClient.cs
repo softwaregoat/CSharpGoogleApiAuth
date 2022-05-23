@@ -122,7 +122,7 @@ namespace ConsoleApp
             }
 
             Console.WriteLine("GetPeopleAsync is null value. Please try later");
-            return null; // {"searchResults":[{"self":"https://api.icims.com/customers/1221/people/1", "id":1}]}
+            return null;
         }
 
     }
