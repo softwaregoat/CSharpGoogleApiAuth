@@ -19,7 +19,6 @@ namespace ConsoleApp
         [Obsolete]
         static void Main(string[] args)
         {
-            string connetionString = @"Data Source=DESKTOP-3RMGPM9\SQLSERVER;Initial Catalog=testdb;User ID=sa;Password=xxx";
 
             AuthClient authClient = new AuthClient();
 
@@ -29,7 +28,7 @@ namespace ConsoleApp
             authClient.audience = "";
             authClient.client_credentials = "";
 
-            var customerId = "1221";
+            var customerId = "12211";
 
             var result = authClient.GetPeoplesByCustomerAsync(customerId).Result;
 
@@ -40,23 +39,29 @@ namespace ConsoleApp
                 Environment.Exit(0);
             }
 
+            string connetionString = @"Data Source=DESKTOP-3RMGPM9\SQLSERVER;Initial Catalog=testdb;User ID=sa;Password=xxx";
+
             var peoples = result.searchResults;
 
             foreach (var people in peoples)
             {
-                var profileID = people.id;
-                var profile = authClient.GetPeopleAsync(customerId, profileID.ToString());
-                if (result == null)
+                var profileId = people.id;
+
+                var profile = authClient.GetPeopleAsync(customerId, profileId);
+
+                if (profile == null)
                 {
-                    Console.WriteLine($"GetPeopleAsync ProfileID: {profileID}. Please try later");
+                    Console.WriteLine($"GetPeopleAsync Issue in ProfileID: {profileId}. Please try later");
                     continue;
                 }
-                string query = "INSERT INTO [dbo].[profile] ([profileID],[PersonID],[JobID],[CompanyID],[Note]) VALUES"
-                                + $"('{profileID}'"
-                                + $",'{profile.PersonID}'"
-                                + $",'{profile.JobID}'"
-                                + $",'{profile.CompanyID}'"
-                                + $",'{profile.Note}')";
+
+                string query = "INSERT INTO [dbo].[profile] ([profileID],[firstname],[lastname],[email],[folder]) VALUES"
+                                + $"('{profileId}'"
+                                + $",'{profile.firstname}'"
+                                + $",'{profile.lastname}'"
+                                + $",'{profile.email}'"
+                                + $",'{profile.folder}')";
+                Console.WriteLine(query);
 
                 Insert2SQL(connetionString, query);
             }
