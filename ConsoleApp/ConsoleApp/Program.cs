@@ -54,7 +54,7 @@ namespace ConsoleApp
                 }
 
                 string query = "INSERT INTO [dbo].[profile] ([profileID],[firstname],[lastname],[email]) VALUES"
-                                + $"('{profileId}'"
+                                + $"({profileId}"
                                 + $",'{GetProperty(profile, "firstname")}'"
                                 + $",'{GetProperty(profile, "lastname")}'"
                                 + $",'{GetProperty(profile, "email")}')";
@@ -84,6 +84,7 @@ namespace ConsoleApp
             {
                 var site = System.Runtime.CompilerServices.CallSite<Func<System.Runtime.CompilerServices.CallSite, object, object>>.Create(Microsoft.CSharp.RuntimeBinder.Binder.GetMember(0, name, target.GetType(), new[] { Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo.Create(0, null) }));
                 var val = site.Target(site, target).ToString();
+                val = val.Replace('\'', '\"');
                 return val;
             }
             catch (Exception ex)
