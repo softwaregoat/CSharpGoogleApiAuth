@@ -18,6 +18,7 @@ namespace ConsoleApp
         public string client_secret { get; set; }
         public string audience { get; set; }
         public string client_credentials { get; set; }
+        private string access_token { get; set; }
         public DateTime accessTokenExpiry { get; set; }
 
         public async Task<string> GetTokenAsync()
@@ -25,7 +26,7 @@ namespace ConsoleApp
             var expiryDate = new DateTime();
             if (accessTokenExpiry > expiryDate)
             {
-                return null;
+                return access_token;
             }
 
             var url = $"https://{domain}.auth0.com/oauth/token";
@@ -57,9 +58,9 @@ namespace ConsoleApp
                 string expires_in = response_json.expires_in + "";
 
                 accessTokenExpiry = expiryDate.AddSeconds(double.Parse(expires_in.ToString()));
-
                 Console.WriteLine("Token is valid.");
-                return response_json.access_token;
+                access_token = response_json.access_token;
+                return access_token;
             }
             Console.WriteLine("Token is null value. Please try later");
             return null;
